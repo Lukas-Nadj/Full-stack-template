@@ -1,0 +1,49 @@
+services:
+  # React Single Page Application (Nginx + static build)
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: fullstack-app
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    depends_on:
+      - api
+      - db
+
+  # Node.js + Express API backend
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: fullstack-api
+    environment:
+      PORT: 4000
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: app_user
+      DB_PASSWORD: app_password
+      DB_NAME: app_db
+    ports:
+      - "4000:4000"
+    restart: unless-stopped
+    depends_on:
+      - db
+
+  # MySQL relational database
+  db:
+    image: mysql:8.4
+    command: --default-time-zone=+00:00
+    container_name: fullstack-db
+    environment:
+      MYSQL_DATABASE: app_db
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: app_password
+      MYSQL_ROOT_PASSWORD: root_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db/volume:/var/lib/mysql
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    restart: unless-stopped
