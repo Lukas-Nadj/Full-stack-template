@@ -25,9 +25,8 @@ The project is structured into three self-contained directories:
 │   └── package.json
 │
 ├── db/                   # Relational Database (MySQL 8.4)
-│   ├── init/             # SQL scripts executed on initial startup
-│   │   └── 01-init.sql   # Starter schema & seed data
-│   └── volume/           # Persistent database volume directory
+│   └── init/             # SQL scripts executed on initial startup
+│       └── 01-init.sql   # Starter schema & seed data
 │
 └── docker-compose.yml    # Root multi-container orchestration
 ```
@@ -56,8 +55,7 @@ docker compose down
 To reset the database and re-run initialization scripts:
 
 ```bash
-docker compose down
-rm -rf db/volume/*
+docker compose down -v
 docker compose up --build
 ```
 
